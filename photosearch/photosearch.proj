@@ -4,7 +4,7 @@
     <ProjectGuid>163ec050-1adf-4897-b5bf-e6b896dafa1b</ProjectGuid>
     <ProjectTypeGuids>{070BCB52-5A75-4F8C-A973-144AF0EAFCC9}</ProjectTypeGuids>
     <AppIdentifier>com.telerik.airlines_sample_app</AppIdentifier>
-    <ProjectName>airlines sample app</ProjectName>
+    <ProjectName>photosearch</ProjectName>
     <IsRunnable>true</IsRunnable>
     <TemplateAppName>Cordova220</TemplateAppName>
     <AndroidPermissions>android.permission.CAMERA;android.permission.VIBRATE;android.permission.ACCESS_COARSE_LOCATION;android.permission.ACCESS_FINE_LOCATION;android.permission.ACCESS_LOCATION_EXTRA_COMMANDS;android.permission.READ_PHONE_STATE;android.permission.INTERNET;android.permission.RECEIVE_SMS;android.permission.RECORD_AUDIO;android.permission.MODIFY_AUDIO_SETTINGS;android.permission.READ_CONTACTS;android.permission.WRITE_CONTACTS;android.permission.WRITE_EXTERNAL_STORAGE;android.permission.ACCESS_NETWORK_STATE</AndroidPermissions>
@@ -12,7 +12,10 @@
     <iOSStatusBarStyle>Default</iOSStatusBarStyle>
     <BundleVersion>1.0</BundleVersion>
     <AndroidVersionCode>1</AndroidVersionCode>
-    <AndroidHardwareAcceleration>True</AndroidHardwareAcceleration>
+    <AndroidHardwareAcceleration>true</AndroidHardwareAcceleration>
+    <iOSDisplayName />
+    <iOSDeviceFamily>1;2</iOSDeviceFamily>
+    <iOSBackgroundMode />
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="App_Resources" />
@@ -60,12 +63,7 @@
     <Resource Include="App_Resources\Android\drawable-ldpi\icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="images\ice_air.svg" />
     <Content Include="images\ice_air_logo.png" />
-    <Content Include="images\ice_air_logo.svg" />
-    <Content Include="images\ice_air_logo@x2.png" />
-    <Content Include="images\ice_air_seatmap.svg" />
-    <Content Include="images\seat.svg" />
     <Content Include="index.html" />
     <Content Include="jquery-mobile\images\ajax-loader.gif" />
     <Content Include="jquery-mobile\images\icons-18-black.png" />

@@ -16,7 +16,7 @@ airlinesApp.prototype = function() {
     _ffNum = null, 
     _customerData = null,
     _login = false,
-    
+    route = null,
     run = function(){
         var that = this,
         $seatPicker=$('#seatPicker');
@@ -25,8 +25,20 @@ airlinesApp.prototype = function() {
         $('#home').live('pagebeforecreate',$.proxy(_initHome,that));
         $('#checkIn').live('pageshow', $.proxy(_initCheckIn,that));
         $('.tripDetail').live('click', function () {
+            $('#streetview').empty();
         	var item = $(this);
         	_flightForDetails = item.data('flight');
+            
+        });
+        $('.next').live('click', function () {
+        	$('#streetview').empty();
+            var item = $(this);
+            point = item.data('point');
+            console.log(point);
+            $.get('http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route,function(data) {
+                 console.log(data);
+                $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[point].lat + ',' + data.content[point].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
+            }, "json");
         });
         
         $('.checkIn').live('click', function () {
@@ -47,16 +59,23 @@ airlinesApp.prototype = function() {
     },
     
     _initTripDetail = function(){
-        var seg = _flightForDetails.segments[0];
-	    $('#tripDetail-title').text(seg.from + ' to ' + seg.to);
-	    $('#tripDetail-flightNum').text(seg.flightNum);
-	    $('#tripDetail-depart').text(seg.departDate + ' at ' + seg.time);
-	    $('#tripDetail-seat').text(seg.seat);
-	    seg = _flightForDetails.segments[1];
-	    $('#tripDetail-return-title').text(seg.from + ' to ' + seg.to);
-	    $('#tripDetail-return-flightNum').text(seg.flightNum);
-	    $('#tripDetail-return-depart').text(seg.departDate + ' at ' + seg.time);
-        $('#tripDetail-return-seat').text(seg.seat);
+	    route = _flightForDetails.Location;
+        $.ajax({
+        url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route ,
+        type: 'get',
+        dataType: 'json',
+        async: false,
+        cache: false,
+	        success: function(data, textStatus, jqXHR) {
+                $('#streetview').empty();
+                $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[0].lat + ',' + data.content[0].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
+                var item = $('#button');
+                item.data('point', 1);
+                item.addClass('next');
+	        }     
+        });
+	   
+	   
     },
     
     _initBoardingPass = function(){
@@ -101,30 +120,25 @@ airlinesApp.prototype = function() {
 	},
     
     _handleDataForFF = function (data) {
-        $flightList = $('#myTripsListView');
-		_customerData = data;
-		$('#ffname').text(data.firstName);
-		$('#ffnum').text(data.ffNum);
-		$('#currentStatus').text(data.status);
-		$('#miles').text(data.miles);
-		$('#numberOfFlights').text(data.flights.length);
-		for (var i in data.flights) {
-			var flight = data.flights[i],
-            currentSegment = flight.segments[flight.currentSegment];
-			$flightList.append('<li id="' + flight.id + '"><a href="#tripDetail" data-transition="slide">' + currentSegment.from + ' to ' + currentSegment.to + '</a></li>');
-			var item = $('#' + flight.id, $flightList);
-			item.data('flight', flight);
-			if (flight.timeToCheckIn) {
-
-				item.addClass('checkIn');
-				$('a', item).attr('href', '#checkIn');
-			}
-			else {
-				item.addClass('tripDetail');
-			}
-		}
+        $flightList = $('#myTripsListView');	
+        $.ajax({
+        url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Routes/',
+        type: 'get',
+        dataType: 'json',
+        async: false,
+        cache: false,
+	        success: function(data, textStatus, jqXHR) {
+	     		_customerData = data;
+                for (var i in data.content) {
+                    var flight = data.content[i];
+                    $flightList.append('<li class="clearfix list" id="' + data.content[i].idRoutes + '"><img src="http://placehold.it/100x100"><a href="#tripDetail" data-transition="slide">'  + data.content[i].Name +  '</a><p>' +data.content[i].Duration + '</p></li>');
+			        var item = $('#' +  data.content[i].idRoutes, $flightList);
+                    item.data('flight', flight);
+                    item.addClass('tripDetail');
+                }
+	        }     
+        });     
 		$.mobile.changePage('#home', { transition: 'flip' });
-
 	};
     
     return {

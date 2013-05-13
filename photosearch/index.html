@@ -132,64 +132,10 @@
                 <a data-role="button" href="#home" class="ui-btn-right">Home</a>
 			</div>
 			<div data-role="content">
-				<ul data-role="listview" id="tripDetailList" data-inset="true" data-theme="d">
-					<li class="center-wrapper" data-role="list-divider">
-						<span id="tripDetail-title"></span>
-					</li>
-					<li>
-						<div class="ui-grid-a">
-							<div class="ui-block-a">Flight Number</div>
-							<div class="ui-block-b">
-								<span id="tripDetail-flightNum"></span>
-							</div>
-						</div>
-					</li>
-					<li>
-						<div class="ui-grid-a">
-							<div class="ui-block-a">Departure Time</div>
-							<div class="ui-block-b">
-								<span id="tripDetail-depart"></span>
-							</div>
-						</div>
-					</li>
-					<li>
-						<div class="ui-grid-a">
-							<div class="ui-block-a">Seat</div>
-							<div class="ui-block-b">
-								<span id="tripDetail-seat"></span>
-							</div>
-						</div>
-					</li>
-				</ul>
-				<ul data-role="listview" id="tripDetailList-return" data-inset="true" data-theme="d">
-					<li class="center-wrapper" data-role="list-divider">
-						<span id="tripDetail-return-title"></span>
-					</li>
-					<li>
-						<div class="ui-grid-a">
-							<div class="ui-block-a">Flight Number</div>
-							<div class="ui-block-b">
-								<span id="tripDetail-return-flightNum"></span>
-							</div>
-						</div>
-					</li>
-					<li>
-						<div class="ui-grid-a">
-							<div class="ui-block-a">Departure Time</div>
-							<div class="ui-block-b">
-								<span id="tripDetail-return-depart"></span>
-							</div>
-						</div>
-					</li>
-					<li>
-						<div class="ui-grid-a">
-							<div class="ui-block-a">Seat</div>
-							<div class="ui-block-b">
-								<span id="tripDetail-return-seat"></span>
-							</div>
-						</div>
-					</li>
-				</ul>
+			    <div id="streetview">
+                    
+                </div>
+                <a data-role="button" href="javascript:history.go(0)" id="button" class="ui-btn-right">Volgende locatie</a>
 			</div>
 		</div>
 
@@ -291,7 +237,7 @@
 			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
 				<h1>My Trips</h1>
 			</div>
-			<div data-role="content">
+			<div data-role="content" class="clearfix">
 				<ul data-role="listview" id="myTripsListView" data-inset="true" data-theme="d">
 				</ul>
 			</div>

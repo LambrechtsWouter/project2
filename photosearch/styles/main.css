@@ -1,6 +1,40 @@
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
+}
 body {
     
 } 
+img {
+    margin-left: 15px;
+    float:left;
+}
+#streetview img {
+    margin-left:-5px;
+    margin-right: 5px;
+}
+.list a {
+    float: left;
+}
+.list {
+    width:100%;
+}
 .ui-page {
     background:#d3dfe5;
 }
