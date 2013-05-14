@@ -4,63 +4,49 @@ document.addEventListener("deviceready", onDeviceReady, false);
 
 // PhoneGap is ready
 function onDeviceReady() {
-    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 30000 });
+    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 999999999999999 });
 }
 function onSuccess(position) {
-    $('#text').empty();
-    $('#text').append('Latitude: '  + position.coords.latitude + '<br />' +
-                        'Longitude: ' + position.coords.longitude     + '<br />' +
-                        '<hr />');
+    lat = position.coords.latitude;
+    lng = position.coords.longitude;
+    $("#text").removeClass();
+    if(boolRoute == true){
+        location();
+    }
 }
 function onError(error) {
     alert('code: '    + error.code    + '\n' +
           'message: ' + error.message + '\n');
 }
-function calculateDistances() {
-  var service = new google.maps.DistanceMatrixService();
-  service.getDistanceMatrix(
-    {
-      origins: origin1,
-      destinations: destinationA,
-      travelMode: google.maps.TravelMode.DRIVING,
-      unitSystem: google.maps.UnitSystem.METRIC,
-    }, callback);
+function location(){
+   var p1  = new google.maps.LatLng(lat1,lng1);
+   var p2  = new google.maps.LatLng(lat,lng);
+   var m = google.maps.geometry.spherical.computeDistanceBetween(p1, p2);
+   
+   if(m >= 30){
+       $("#text").addClass("red");
+   }else if (m >= 10 && m <= 30) {
+        $("#text").addClass("orange");
+   }else{
+        $("#text").addClass("green");
+   }
 }
-
-function callback(response, status) {
-  if (status != google.maps.DistanceMatrixStatus.OK) {
-    alert('Error was: ' + status);
-  } else {
-    var origins = response.originAddresses;
-    var destinations = response.destinationAddresses;
-
-    for (var i = 0; i < origins.length; i++) {
-      var results = response.rows[i].elements;
-      for (var j = 0; j < results.length; j++) {
-
-        outputDiv.innerHTML += origins[i] + ' to ' + destinations[j]
-            + ': ' + results[j].distance.text + ' in '
-            + results[j].duration.text + '<br>';
-      }
-    }
-  }
-}
+var lng = null;
+var lat = null;
+var lat1 = null;
+var lng1 = null;
+var boolRoute = false;
 var airlinesApp = function(){}
 
 airlinesApp.prototype = function() {
-    var _flightForCheckin = null,
-    _flightForDetails=null,
+    var _flightForDetails=null,
     _ffNum = null, 
-    _customerData = null,
     _login = false,
     route = null,
     run = function(){
-        var that = this,
-        $seatPicker=$('#seatPicker');
+        var that = this;
         $('#tripDetail').live('pagebeforeshow',$.proxy(_initTripDetail,that));
-        $('#boardingPass').live('pageshow',$.proxy(_initBoardingPass,that));
         $('#home').live('pagebeforecreate',$.proxy(_initHome,that));
-        $('#checkIn').live('pageshow', $.proxy(_initCheckIn,that));
         $('.tripDetail').live('click', function () {
             $('#streetview').empty();
         	var item = $(this);
@@ -68,65 +54,40 @@ airlinesApp.prototype = function() {
             
         });
         $('.next').live('click', function () {
+            boolRoute = false;
         	$('#streetview').empty();
             var item = $(this);
             point = item.data('point');
             console.log(point);
             $.get('http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route,function(data) {
-                 console.log(data);
+                lat1 = data.content[point].lat;
+                lng1 = data.content[point].lng;
+                boolRoute = true;
                 $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[point].lat + ',' + data.content[point].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
                 
             }, "json");
         });
-        
-        $('.checkIn').live('click', function () {
-        	var item = $(this);
-        	_flightForCheckin = item.data('flight');
-        });
-        
-        $seatPicker.live('pageshow', function (event) {
-        	var el = $('#seatMapPickerContainer', this),
-        	seat = _flightForCheckin.segments[_flightForCheckin.currentSegment].seat;
-        	seatMapDrawing.drawSeatMap(el, seat);
-        
-        });
-        
-        $seatPicker.live('pagebeforehide', function (event) {
-        	_flightForCheckin.segments[_flightForCheckin.currentSegment].seat = seatMapDrawing.getselectedSeat();
-        });
     },
-    
+   
     _initTripDetail = function(){
 	    route = _flightForDetails.Location;
         $.ajax({
         url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route ,
         type: 'get',
         dataType: 'json',
-        async: false,
-        cache: false,
 	        success: function(data, textStatus, jqXHR) {
+                lat1 = data.content[0].lat;
+                lng1 = data.content[0].lng;
+                boolRoute = true;
                 $('#streetview').empty();
                 $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[0].lat + ',' + data.content[0].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
                 var item = $('#button');
                 item.data('point', 1);
                 item.addClass('next');
 	        }     
-        });
-	   
-	   
+        });  
     },
-    
-    _initBoardingPass = function(){
-        currentseg = _flightForCheckin.segments[_flightForCheckin.currentSegment];
 
-	    $('#boardingpass-cnum').text(_flightForCheckin.cNum);
-	    $('#boardingpass-passenger').text(_customerData.firstName + ' ' + _customerData.lastName);
-	    $('#boardingpass-seat').text(currentseg.seat);
-	    $('#boardingpass-gate').text(currentseg.gate);
-	    $('#boardingpass-depart').text(currentseg.time);
-	    var flight = currentseg.flightNum + ':' + currentseg.from + ' to ' + currentseg.to;
-	    $('#boardingpass-flight').text(flight);
-    },
     
     _initHome = function(){
         if (!_login) {
@@ -140,34 +101,18 @@ airlinesApp.prototype = function() {
 	    }
     },
     
-    _initCheckIn = function(){
-        var currentseg = _flightForCheckin.segments[_flightForCheckin.currentSegment],
-	    seat = currentseg.seat,
-	    flight = currentseg.from + ' to ' + currentseg.to;
-	    $('#checkIn-flight-number').text(currentseg.flightNum);
-	    $('#checkIn-flight-destination').text(flight);
-        
-	    $('#checkIn-seat').text(seat);
-    },
-    
     _handleLogOn = function (ff, success) {
 		if (success) {
 			_ffNum = ff;
 			airData.getDataforFF(_ffNum,_handleDataForFF);
 		}
 	},
-   
-    
-	
-    
     _handleDataForFF = function (data) {
         $flightList = $('#myTripsListView');	
         $.ajax({
         url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Routes/',
         type: 'get',
         dataType: 'json',
-        async: false,
-        cache: false,
 	        success: function(data, textStatus, jqXHR) {
 	     		_customerData = data;
                 for (var i in data.content) {
