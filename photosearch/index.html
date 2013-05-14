@@ -9,6 +9,7 @@
 		<script src="cordova.js" type="text/javascript"></script>
 		<script src="jquery-mobile/jquery-1.8.2.min.js" type="text/javascript"></script>
 		<script src="jquery-mobile/jquery.mobile-1.2.0.min.js" type="text/javascript"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
         <script>
           $(function() { 
             $.mobile.defaultHomeScroll = 0;
@@ -48,21 +49,7 @@
 				</div>
                 
                 <div class="info-wrapper-right">
-					<div class="info">
-                        <div class="info-data" id="ffnum"></div>
-						<div class="info-label" for="ffnum">Ice Miles:</div>
-                        <div class="clear"></div>
-					</div>
-					<div class="info">
-                        <div class="info-data" id="miles"></div>
-						<div class="info-label" for="miles">Total Miles:</div>
-                        <div class="clear"></div>
-					</div>
-					<div class="info">
-                        <div class="info-data" id="currentStatus">&nbsp;</div>
-						<div class="info-label" for="currentStatus">Priority:</div>
-                        <div class="clear"></div>
-					</div>
+					
 				</div>
                 <div class="clear"></div>
             </div>
@@ -70,9 +57,7 @@
 			<div data-role="content"> 
 				<ul data-role="listview" id="myTripsView" data-inset="true" data-theme="d">
 					<li>
-						<a href="#myTrips" data-transition="slide">
-							MyTrips <span id="numberOfFlights"></span>
-						</a>
+						<a href="#myTrips" data-transition="slide">MyRoutes</a>
 					</li>
 				</ul>
 				<ul data-role="listview" id="flightStatusView" data-inset="true" data-theme="d">
@@ -95,17 +80,6 @@
 						<a href="#settings" data-transition="slide">Settings</a>
 					</li>
 				</ul>
-			</div>
-		</div>
-
-		<!-- seatPicker page -->
-		<div id="seatPicker" data-role="page">
-			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
-				<h1>Pick a seat</h1>
-				<a href="#checkIn" data-role="button" id="backButton" data-transition="flip" class="ui-btn-right" data-rel="back">Done</a>
-			</div>
-			<div data-role="content">
-				<div id="seatMapPickerContainer"></div>
 			</div>
 		</div>
 
@@ -135,67 +109,12 @@
 			    <div id="streetview">
                     
                 </div>
+                <div id="text"></div>
                 <a data-role="button" href="javascript:history.go(0)" id="button" class="ui-btn-right">Volgende locatie</a>
 			</div>
 		</div>
 
-		<!--boardingPass page-->
-		<div id="boardingPass" data-role="page" data-add-back-btn="true">
-			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
-				<h1>Boarding Pass</h1>
-				<a data-role="button" href="#home" class="ui-btn-right">Home</a>
-			</div>
-			<div data-role="content">
-				<ul data-role="listview" id="boardingPassData" data-inset="true" data-theme="d">
-					<li class="center-wrapper" data-role="list-divider">
-						<span id="boardingpass-cnum"></span>
-					</li>
-					<li class="center-wrapper">
-						<div class="boardingPassCode"></div>
-					</li>
-					<li>
-						<div class="ui-grid-a">
-							<div class="ui-block-a">Passenger</div>
-							<div class="ui-block-b">
-								<span id="boardingpass-passenger"></span>
-							</div>
-						</div>
-					</li>
-					<li>
-						<div class="ui-grid-a">
-							<div class="ui-block-a">Flight</div>
-							<div class="ui-block-b">
-								<span id="boardingpass-flight"></span>
-							</div>
-						</div>
-					</li>
-					<li>
-						<div class="ui-grid-a">
-							<div class="ui-block-a">Departure Time</div>
-							<div class="ui-block-b">
-								<span id="boardingpass-depart"></span>
-							</div>
-						</div>
-					</li>
-					<li>
-						<div class="ui-grid-a">
-							<div class="ui-block-a">Gate</div>
-							<div class="ui-block-b">
-								<span id="boardingpass-gate"></span>
-							</div>
-						</div>
-					</li>
-					<li>
-						<div class="ui-grid-a">
-							<div class="ui-block-a">Seat</div>
-							<div class="ui-block-b">
-								<span id="boardingpass-seat"></span>
-							</div>
-						</div>
-					</li>
-				</ul>
-			</div>
-		</div>
+	
 
 		<!--checkIn page-->
 		<div id="checkIn" data-role="page" data-add-back-btn="true">
@@ -233,12 +152,12 @@
 		</div>
 
 		<!--myTrips page-->
-		<div id="myTrips" data-role="page" data-add-back-btn="true">
+		<div id="myTrips" data-role="page" class="clearfix" data-add-back-btn="true">
 			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
 				<h1>My Trips</h1>
 			</div>
 			<div data-role="content" class="clearfix">
-				<ul data-role="listview" id="myTripsListView" data-inset="true" data-theme="d">
+				<ul class="clearfix" data-role="listview" id="myTripsListView" data-inset="true" data-theme="d">
 				</ul>
 			</div>
 		</div>
