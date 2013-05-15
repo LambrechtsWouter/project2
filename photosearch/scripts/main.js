@@ -1,15 +1,21 @@
 
 // Wait for Apache Cordova to load
 document.addEventListener("deviceready", onDeviceReady, false);
-
+ var watchID = null;
 // PhoneGap is ready
 function onDeviceReady() {
-    var watchID = navigator.geolocation.watchPosition(onSuccess, onError, { timeout: 999999999999999 });
+   
+    var options = { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
+    
+    watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
+    navigator.geolocation.clearWatch(watchID);
+    watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
 }
 function onSuccess(position) {
     lat = position.coords.latitude;
     lng = position.coords.longitude;
-    $("#text").removeClass();
+    $("#icon").removeClass();
+    $("#text").empty();
     if(boolRoute == true){
         location();
     }
@@ -21,14 +27,17 @@ function onError(error) {
 function location(){
    var p1  = new google.maps.LatLng(lat1,lng1);
    var p2  = new google.maps.LatLng(lat,lng);
-   var m = google.maps.geometry.spherical.computeDistanceBetween(p1, p2);
+   var m =  Math.round(google.maps.geometry.spherical.computeDistanceBetween(p1, p2));
    
    if(m >= 30){
-       $("#text").addClass("red");
+       $("#icon").addClass("red");
+       $("#text").append(m + 'meters');
    }else if (m >= 10 && m <= 30) {
-        $("#text").addClass("orange");
+        $("#icon").addClass("orange");
+       $("#text").append(m + 'meters');
    }else{
-        $("#text").addClass("green");
+        $("#icon").addClass("green");
+        $("#text").append(m + 'meters');
    }
 }
 var lng = null;
@@ -51,7 +60,6 @@ airlinesApp.prototype = function() {
             $('#streetview').empty();
         	var item = $(this);
         	_flightForDetails = item.data('flight');
-            
         });
         $('.next').live('click', function () {
             boolRoute = false;
@@ -64,13 +72,16 @@ airlinesApp.prototype = function() {
                 lng1 = data.content[point].lng;
                 boolRoute = true;
                 $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[point].lat + ',' + data.content[point].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
-                
+                var item = $('#button');
+                item.data('point', 2);
+                item.addClass('next');
             }, "json");
         });
     },
    
     _initTripDetail = function(){
-	    route = _flightForDetails.Location;
+	    route = _flightForDetails.idRoutes;
+        console.log(route);
         $.ajax({
         url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route ,
         type: 'get',
@@ -79,6 +90,7 @@ airlinesApp.prototype = function() {
                 lat1 = data.content[0].lat;
                 lng1 = data.content[0].lng;
                 boolRoute = true;
+                $('#total').append(data.content.length);
                 $('#streetview').empty();
                 $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[0].lat + ',' + data.content[0].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
                 var item = $('#button');
@@ -117,8 +129,8 @@ airlinesApp.prototype = function() {
 	     		_customerData = data;
                 for (var i in data.content) {
                     var flight = data.content[i];
-                    $flightList.append('<li class="clearfix list" id="' + data.content[i].idRoutes + '"><img src="http://placehold.it/100x100"/><a href="#tripDetail" data-transition="slide">'  + data.content[i].Name +  '</a></li>');
-			        var item = $('#' +  data.content[i].idRoutes, $flightList);
+                    $flightList.append('<a href="#tripDetail" data-transition="slide" id="route"><li class="clearfix list" id="' + data.content[i].Name + '"><img src="http://placehold.it/100x100"/><p>'  + data.content[i].Name +  '</p><p>Een echt stadzoektocht door de historische stad Gent.</p></li></a>');
+			        var item = $('#' +  data.content[i].Name, $flightList);
                     item.data('flight', flight);
                     item.addClass('tripDetail');
                 }

@@ -6,6 +6,22 @@
 	line-height: 0;
 	height: 0;
 }
+.tripDetail {
+    background-color: #EEE;
+    width: 100%;
+    border: 2px solid;
+}
+a#route{
+    width:100%;
+}
+.tripDetail p {
+    float: left;
+    width: 59%;
+    margin-top: 15px;
+    color: black;
+    white-space: normal;
+    font-size: 12px;
+}
 .green{
     background-color: green;
     width:50px;
@@ -13,6 +29,11 @@
     float:left;
     margin-left: 15px;
     margin-top: 15px;
+}
+#button{
+    width:100%;
+    margin-top:5px;
+    clear:both;
 }
 .orange{
     background-color: #FF7F00;
@@ -45,15 +66,26 @@ body {
     
 } 
 img {
-    margin-left: 15px;
-    float:left;
+    margin-left: 6px;
+    float: left;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    margin-right: 5px;
 }
 #streetview img {
-    margin-left:-5px;
-    margin-right: 5px;
+margin-left: -5px;
+margin-right: 5px;
+margin-top: -11px;
+height: 90%;
+width: 100%;
 }
 .list a {
     float: left;
+    margin-left: 15px;
+    color: blue;
+    text-decoration: none;
+    font-weight: bolder;
+    font-size: 1.5em;
 }
 .list {
     width:100%;
@@ -106,11 +138,11 @@ img {
 
 .info-wrapper-left {
     float:left;
-    width:25%;
+    width:30%;
 }
 .info-wrapper-right {
     float:right;
-    width:75%;
+    width:59%;
 }
 .info {
     margin:0.6em 0em;
@@ -141,8 +173,11 @@ img {
     -webkit-box-shadow: inset 0px 1px 0px 0px rgba(0, 0, 0, 0.3),0 1px 1px rgba(255,255,255,0.2);
     box-shadow: inset 0px 1px 0px 0px rgba(0, 0, 0, 0.3),0 1px 1px rgba(255,255,255,0.2);
 }
+h1 span {
+    color:green;
+}
 .ice-logo {
-	content:url("../images/ice_air_logo.png");
+	content:url("../images/photosearch.jpg");
     margin-top: 7px;
     width:100px;
     height:100px;
@@ -207,6 +242,7 @@ img {
 }
 
 .ui-content .ui-listview-inset {
+    width:100%;
     margin: 1em 5px;
 }
 
@@ -249,9 +285,6 @@ img {
 	width: 18px;
 	height: 18px;
     float:left;
-    margin-left:-5px;
-    margin-right:5px;
-    background-image: url(images/icons-18.png);
 	background-repeat: no-repeat;
 }
 #myTripsListView .checkIn a:before {

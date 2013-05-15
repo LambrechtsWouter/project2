@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="images\ice_air_logo.png" />
+    <Content Include="images\photosearch.jpg" />
     <Content Include="index.html" />
     <Content Include="jquery-mobile\images\ajax-loader.gif" />
     <Content Include="jquery-mobile\images\icons-18-black.png" />
@@ -76,7 +77,6 @@
     <Content Include="jquery-mobile\stocktheme.css" />
     <Content Include="scripts\airlinedata.js" />
     <Content Include="scripts\main.js" />
-    <Content Include="scripts\seatmapdrawing.js" />
     <Content Include="styles\images\icons-18.png" />
     <Content Include="styles\images\icons-36.png" />
     <Content Include="styles\main.css" />
