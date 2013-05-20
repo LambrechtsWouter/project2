@@ -6,10 +6,8 @@ document.addEventListener("deviceready", onDeviceReady, false);
     
 // PhoneGap is ready
 function onDeviceReady() {
-   checkConnection();
-    
-    
-    
+   checkConnection();  
+   watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
 }
 function checkConnection() {
     var networkState = navigator.network.connection.type;
@@ -30,6 +28,7 @@ function onSuccess(position) {
     lng = position.coords.longitude;
     $("#icon").removeClass();
     $("#text").empty();
+    console.log(boolRoute);
     if(boolRoute == true){
         location();
     }
@@ -53,7 +52,6 @@ function location(){
         $("#icon").addClass("green");
         $("#text").append(m + 'meters');
        navigator.notification.vibrate(2500);
-       navigator.geolocation.clearWatch(watchID);
        sucessLocation();
    }
 }
@@ -61,11 +59,13 @@ function location(){
 function sucessLocation(){
     $('#streetview').empty();
     $.mobile.changePage("#Location", { transition: "flip" });
+    
 }
 var lng = null;
 var lat = null;
 var lat1 = null;
 var lng1 = null;
+var email = null;
 var boolRoute = false;
 var photoTourApp = function(){}
 
@@ -77,36 +77,59 @@ photoTourApp.prototype = function() {
         var that = this;
         $('#tripDetail').live('pagebeforeshow',$.proxy(_initTripDetail,that));
         $('#home').live('pagebeforecreate',$.proxy(_initHome,that));
+        $('#btnHome').live('click', function () {
+            boolRoute = false;
+        });
+        $('#register').submit(function () {
+          var username = $('#email').val();
+          var password = $('#password').val();
+          _login = true;
+          $.post('http://wouterlambrechts.ikdoeict.be/project2/api/users/NewUser', { Email: username, password: password });
+          window.setTimeout(function () {
+                $('span#ffname').html(username);
+    			_handleDataForFF();
+               
+    		}, 3000);  
+        });
+        
         $('.tripDetail').live('click', function () {
            
             $('#streetview').empty();
         	var item = $(this);
         	_flightForDetails = item.data('flight');
         });
+        
         $('.next').live('click', function () {
-             $('#streetview').empty();
+            $('#streetview').empty();
             $.mobile.changePage("#tripDetail", { transition: "flip" });
             boolRoute = false;
             var item = $(this);
             point = item.data('point');
-            console.log(point);
-            $.get('http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route,function(data) {
-                lat1 = data.content[point].lat;
-                lng1 = data.content[point].lng;
-                watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
-                boolRoute = true;
-                $('#streetview').empty();
-                $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[point].lat + ',' + data.content[point].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
-                var item = $('#button');
-                item.data('point', 2);
-                item.addClass('next');
+            $.get('http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route + '/' + point, {paramOne : 1},function(data) {
+               if(data.content.length > 0){
+                    lat1 = data.content[0].lat;
+                    lng1 = data.content[0].lng;
+                    boolRoute = true;
+                    $('#streetview').empty();
+                    $('p#adres').html(data.content[0].address);
+                    $('span#photo').html(point);
+                    $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[0].lat + ',' + data.content[0].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
+                    var item = $('#button');
+                    var total = point + 1;
+                    console.log(total);
+                    item.data('point', total);
+                    item.addClass('next');
+               }else{
+                   _arrived();
+               }
             }, "json");
         });
     },
-   
+    _arrived = function(){
+        $.mobile.changePage("#Arrived", { transition: "flip" });
+    }       
     _initTripDetail = function(){
 	    route = _flightForDetails.idRoutes;
-        console.log(route);
         $.ajax({
         url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route ,
         type: 'get',
@@ -114,14 +137,15 @@ photoTourApp.prototype = function() {
 	        success: function(data, textStatus, jqXHR) {
                 lat1 = data.content[0].lat;
                 lng1 = data.content[0].lng;
-                watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
                 boolRoute = true;
                 $('#total').empty();
+                $('p#adres').html(data.content[0].address);
+                $('span#photo').html(1);
                 $('#total').append(data.content.length);
                 $('#streetview').empty();
                 $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[0].lat + ',' + data.content[0].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
                 var item = $('#button');
-                item.data('point', 1);
+                item.data('point', 2);
                 item.addClass('next');
 	        }     
         });  
@@ -129,6 +153,7 @@ photoTourApp.prototype = function() {
 
     
     _initHome = function(){
+        
         if (!_login) {
 	    	$.mobile.changePage("#logon", { transition: "flip" });
 	    	$('#login').submit(function () {
@@ -147,6 +172,7 @@ photoTourApp.prototype = function() {
                         			$.mobile.loading('hide');
                                     $(this).hide();
                                     _login = true;
+                                    $('span#ffname').html(username);
                         			_handleDataForFF();
                                    
                         		}, 3000);     		

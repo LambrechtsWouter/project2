@@ -80,19 +80,40 @@
 			<div data-role="content">
 				<form id="login">
 					Username:
-					<input type="text" id="userName" value="jaxon.daniels@gmail.com" />
+					<input type="text" id="userName" value="wouter.lambrechts@gmail.com" />
 					Password:
-					<input type="password" id="pwd" value="P2ssw0rd" />
+					<input type="password" id="pwd" value="150992" />
 					<input type="submit" value="Login" />
+				</form>
+                <ul id="error" class="err"></ul>
+                <a data-role="button" href="#register" style="width=100%" class="ui-btn-right">         Nog geen account ? Klik hier  !!!</a>
+			</div>
+		</div>
+        
+        <!-- register page -->
+		<div id="register" data-role="page">
+			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
+				<h1>Register</h1>
+			</div>
+			<div data-role="content">
+				<form id="register">
+					Email:
+					<input type="text" id="email" value="wouter.lambrechts@gmail.com" />
+					Password:
+					<input type="password" id="password" value="150992" />
+                    Password:
+					<input type="password" id="pwdd" value="150992" />
+                    <br>
+					<input type="submit" value="Register" />
 				</form>
                 <ul id="error" class="err"></ul>
 			</div>
 		</div>
-
+        
 		<!-- tripDetail page -->
 		<div id="tripDetail" data-role="page">
 			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
-				<h1>Route 1: photo 1 of <span id="total"></span></h1>
+				<h1>photo <span id="photo"></span> of <span id="total"></span></h1>
                 <a data-role="button" href="#home" class="ui-btn-right">Home</a>
 			</div>
 			<div data-role="content">
@@ -109,22 +130,33 @@
 		<div id="Location" data-role="page">
 			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
 				<h1>Proficiat <span id="total"></span></h1>
-                <a data-role="button" href="#home" class="ui-btn-right">Home</a>
+                <a data-role="button" href="#home" id="btnHome" class="ui-btn-right">Home</a>
 			</div>
 			<div data-role="content">
-			    <p>Aangekomen op u besteming</p>
+			    <p>Aangekomen op u bestemming</p>
+                <p id="adres"></p>
                 <p>Voor u ziet u de mooie locatie</p>
                 <a data-role="button" id="button" class="ui-btn-right">Volgende locatie</a>
 			</div>
 		</div>
-	
+        
+	    <!-- Arrived  page -->
+		<div id="Arrived" data-role="page">
+			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
+				<h1>Proficiat <span id="total"></span></h1>
+			</div>
+			<div data-role="content">
+			    <p>U hebt de volledige route gedaan</p>
+                <a data-role="button" id="btnHome" href="#home" class="ui-btn-right">Home</a>
+			</div>
+		</div>
 
 
 		<!--myTrips page-->
 		<div id="myTrips" data-role="page">
 			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
 				<h1>My Routes</h1>
-                <a data-role="button" href="#home" class="ui-btn-right">Home</a>
+                <a data-role="button" href="#home" id="btnHome"class="ui-btn-right">Home</a>
 			</div>
 			<div data-role="content">
 				<ul class="clearfix" data-role="listview" id="myTripsListView" data-inset="true" data-theme="d">

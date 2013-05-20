@@ -176,9 +176,6 @@ width: 100%;
     -webkit-box-shadow: inset 0px 1px 0px 0px rgba(0, 0, 0, 0.3),0 1px 1px rgba(255,255,255,0.2);
     box-shadow: inset 0px 1px 0px 0px rgba(0, 0, 0, 0.3),0 1px 1px rgba(255,255,255,0.2);
 }
-h1 span {
-    color:green;
-}
 .ice-logo {
 	content:url("../images/photosearch.jpg");
     margin-top: 7px;
