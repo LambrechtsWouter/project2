@@ -15,7 +15,6 @@
             $.mobile.defaultHomeScroll = 0;
           });
         </script>
-		<script src="scripts/airlinedata.js" type="text/javascript"></script>
 		<script src="scripts/main.js" type="text/javascript"></script>
         
             <!-- Default Stylesheet -->
@@ -86,6 +85,7 @@
 					<input type="password" id="pwd" value="P2ssw0rd" />
 					<input type="submit" value="Login" />
 				</form>
+                <ul id="error" class="err"></ul>
 			</div>
 		</div>
 
@@ -101,10 +101,22 @@
                 </div>
                 <div id="icon" class="clearfix left"></div>
                 <div id="text" class="clearfix right"></div>
-                <a data-role="button" id="button" class="ui-btn-right">Volgende locatie</a>
+                <!--<a data-role="button" id="button" class="ui-btn-right">Volgende locatie</a>-->
 			</div>
 		</div>
 
+        <!-- Location  page -->
+		<div id="Location" data-role="page">
+			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
+				<h1>Proficiat <span id="total"></span></h1>
+                <a data-role="button" href="#home" class="ui-btn-right">Home</a>
+			</div>
+			<div data-role="content">
+			    <p>Aangekomen op u besteming</p>
+                <p>Voor u ziet u de mooie locatie</p>
+                <a data-role="button" id="button" class="ui-btn-right">Volgende locatie</a>
+			</div>
+		</div>
 	
 
 
@@ -139,8 +151,7 @@
 </html>
             
 <script>
-	var airData = new airlinesData(2000);
-	var airlines = new airlinesApp();
-    airlines.run();
+	var photoTour = new photoTourApp();
+    photoTour.run();
 </script>
         
