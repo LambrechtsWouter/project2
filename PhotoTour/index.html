@@ -47,7 +47,7 @@
 				</div>
                 
                 <div class="info-wrapper-right">
-					<h1>Photo<span>Tour</span></h1>
+					<h1>Photo<span id="tour">Tour</span></h1>
 				</div>
                 <div class="clear"></div>
             </div>
@@ -55,7 +55,7 @@
 			<div data-role="content"> 
 				<ul data-role="listview" id="myTripsView" data-inset="true" data-theme="d">
 					<li>
-						<a href="#myTrips" data-transition="slide">MyRoutes</a>
+						<a href="#myRoute" data-transition="slide">MyRoutes</a>
 					</li>
 				</ul>
                 <ul data-role="listview" id="myTripsView" data-inset="true" data-theme="d">
@@ -152,14 +152,26 @@
 		</div>
 
 
-		<!--myTrips page-->
+		<!--myRoute page-->
+        <div id="myRoute" data-role="page">
+			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
+				<h1>My Routes</h1>
+                <a data-role="button" href="#home" id="btnHome"class="ui-btn-right">Home</a>
+			</div>
+			<div data-role="content">
+                <p id="myRoute"></p>
+				<ul class="clearfix" data-role="listview" id="myRouteListView" data-inset="true" data-theme="d">
+				</ul>
+			</div>
+		</div>
+        
 		<div id="myTrips" data-role="page">
 			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
 				<h1>My Routes</h1>
                 <a data-role="button" href="#home" id="btnHome"class="ui-btn-right">Home</a>
 			</div>
 			<div data-role="content">
-				<ul class="clearfix" data-role="listview" id="myTripsListView" data-inset="true" data-theme="d">
+				<ul class="clearfix" data-role="listview" id="RouteListView" data-inset="true" data-theme="d">
 				</ul>
 			</div>
 		</div>
@@ -174,7 +186,7 @@
 			</div>
 			<div data-role="content">
 				<ul data-role="listview" id="Ul4" data-inset="true" data-theme="d">
-					<li>Come on, this is just a sample!</li>
+					<li>under construction</li>
 				</ul>
 			</div>
 		</div>

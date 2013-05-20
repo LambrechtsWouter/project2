@@ -65,7 +65,7 @@ var lng = null;
 var lat = null;
 var lat1 = null;
 var lng1 = null;
-var email = null;
+var IDuser = null;
 var boolRoute = false;
 var photoTourApp = function(){}
 
@@ -87,8 +87,7 @@ photoTourApp.prototype = function() {
           $.post('http://wouterlambrechts.ikdoeict.be/project2/api/users/NewUser', { Email: username, password: password });
           window.setTimeout(function () {
                 $('span#ffname').html(username);
-    			_handleDataForFF();
-               
+    			_handleDataForFF();      
     		}, 3000);  
         });
         
@@ -105,7 +104,7 @@ photoTourApp.prototype = function() {
             boolRoute = false;
             var item = $(this);
             point = item.data('point');
-            $.get('http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route + '/' + point, {paramOne : 1},function(data) {
+            $.get('http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route + '/' + point,function(data) {
                if(data.content.length > 0){
                     lat1 = data.content[0].lat;
                     lng1 = data.content[0].lng;
@@ -168,6 +167,7 @@ photoTourApp.prototype = function() {
 	                success: function(data, textStatus, jqXHR) {
                         if(data.content.length > 0){
                             if(data.content[0].password == password){
+                                IDuser = data.content[0].id;
                                 window.setTimeout(function () {
                         			$.mobile.loading('hide');
                                     $(this).hide();
@@ -195,8 +195,35 @@ photoTourApp.prototype = function() {
     },
     
     _handleDataForFF = function () {
-       
-        $flightList = $('#myTripsListView');	
+        $myRoute = $('#myRouteListView');	
+        $flightList = $('#RouteListView');	
+         $.ajax({
+        url: 'http://wouterlambrechts.ikdoeict.be/project2/api/MyRoute/'+ IDuser,
+        type: 'get',
+        dataType: 'json',
+	        success: function(datas, textStatus, jqXHR) {
+                if(datas.content.length >0){
+                    for (var i in datas.content) {
+                        console.log(datas.content[i]);
+                         $.ajax({
+                            url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Routes/' + datas.content[i].Routes,
+                            type: 'get',
+                            dataType: 'json',
+                              success: function(data, textStatus, jqXHR) {
+                                var flight = data.content[i];
+                                $myRoute.append('<a href="#tripDetail" data-transition="slide" id="route"><li class="clearfix list" id="' + data.content[i].Name + '"><img style="width:100px; height:auto" src="./images/photosearch.jpg"/><H4 style="margin-bottom: -8px;">'  + data.content[i].Name +  '</H4><p>Een echt stadzoektocht door de historische stad Gent.<br>' + data.content[i].Duration + ' minuten</p></li></a>');
+            			        var item = $('#' +  data.content[i].Name, $myRoute);
+                                item.data('flight', flight);
+                                item.addClass('tripDetail');
+                              }
+                         });  
+                     }
+                }else{
+                    $('p#myRoute').html('Nog geen Routes gevonden.</br><a data-role="button" href="#myTrips" id="btnHome"class="ui-btn-right">Ga naar alle Routes</a>');
+                }
+            }     
+        });  
+        
         $.ajax({
         url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Routes/',
         type: 'get',
@@ -206,13 +233,13 @@ photoTourApp.prototype = function() {
 	     		_customerData = data;
                 for (var i in data.content) {
                     var flight = data.content[i];
-                    $flightList.append('<a href="#tripDetail" data-transition="slide" id="route"><li class="clearfix list" id="' + data.content[i].Name + '"><img style="width:100px; height:auto" src="./images/photosearch.jpg"/><p>'  + data.content[i].Name +  '</p><p>Een echt stadzoektocht door de historische stad Gent.</p></li></a>');
+                    $flightList.append('<a href="#tripDetail" data-transition="slide" id="route"><li class="clearfix list" id="' + data.content[i].Name + '"><img style="width:100px; height:auto" src="./images/photosearch.jpg"/><H4 style="margin-bottom: -8px;">'  + data.content[i].Name +  '</h4><p>Een echt stadzoektocht door de historische stad Gent<br>' + data.content[i].Duration + ' minuten</p></li></a>');
 			        var item = $('#' +  data.content[i].Name, $flightList);
                     item.data('flight', flight);
                     item.addClass('tripDetail');
                 }
 	        }     
-        });     
+        });      
 		$.mobile.changePage('#home', { transition: 'flip' });
 	};
     

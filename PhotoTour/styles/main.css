@@ -9,6 +9,9 @@
 .left{
     float:left;
 }
+span#tour{
+    color:green;
+}
 .right{
 float: right;
 font-size: 20px;
