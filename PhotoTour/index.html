@@ -60,7 +60,7 @@
 				</ul>
                 <ul data-role="listview" id="myTripsView" data-inset="true" data-theme="d">
 					<li>
-						<a href="#myTrips" data-transition="slide">Routes</a>
+						<a href="#Routes" data-transition="slide">Routes</a>
 					</li>
 				</ul>
 			
@@ -71,7 +71,44 @@
 				</ul>
 			</div>
 		</div>
-
+        <!--myRoute page-->
+        <div id="Routes" data-role="page">
+			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
+				<h1>Routes</h1>
+                <a data-role="button" href="#home" id="btnHome"class="ui-btn-right">Home</a>
+			</div>
+			<div data-role="content">
+                <ul data-role="listview" id="settingsView" data-inset="true" data-theme="d">
+                    <li>
+                        <input type="text" id="gsmcode" value="wouter.lambrechts@gmail.com" />
+                    </li>
+                     <li>
+                          <a id="gsm" data-transition="slide">Zoek nu</a>
+                     </li> 
+                    
+                 </ul>
+                <ul data-role="listview" id="settingsView" data-inset="true" data-theme="d">
+                    <li>
+                        <select id="prov">
+                          <option value="1">Oost-Vlaanderen</option>
+                          <option value="2">West-Vlaanderen</option>
+                          <option value="3">Vlaams-brabant</option>
+                          <option value="4">Antwerpen</option>
+                          <option value="5">Limburg</option>
+                        </select>
+                    </li>
+                     <li>
+                          <a id="RouteProv" data-transition="slide">Zoek nu</a>
+                     </li> 
+                    
+                 </ul>
+                <ul data-role="listview" id="settingsView" data-inset="true" data-theme="d">
+					<li>
+                        <a href="#myTrips" data-transition="slide">Alle Routes</a>
+                    </li>
+				</ul>
+			</div>
+		</div>
 		<!-- logon page -->
 		<div id="logon" data-role="page">
 			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
@@ -84,9 +121,10 @@
 					Password:
 					<input type="password" id="pwd" value="150992" />
 					<input type="submit" value="Login" />
+                    <a data-role="button" href="#register" style="width=100%" class="ui-btn-right">         Nog geen account ? Klik hier  !!!</a>
 				</form>
                 <ul id="error" class="err"></ul>
-                <a data-role="button" href="#register" style="width=100%" class="ui-btn-right">         Nog geen account ? Klik hier  !!!</a>
+                
 			</div>
 		</div>
         
@@ -175,7 +213,18 @@
 				</ul>
 			</div>
 		</div>
-
+        
+		<div id="provincie" data-role="page">
+			<div data-role="header" data-position="fixed"  data-tap-toggle="false">
+				<h1>My Routes</h1>
+                <a data-role="button" href="#home" id="btnHome"class="ui-btn-right">Home</a>
+			</div>
+			<div data-role="content">
+                <p id="Route"></p>
+				<ul class="clearfix" data-role="listview" id="ProvListView" data-inset="true" data-theme="d">
+				</ul>
+			</div>
+		</div>
 
         
         <!--Settings page-->
@@ -185,8 +234,10 @@
                 <a data-role="button" href="#home" class="ui-btn-right">Home</a>
 			</div>
 			<div data-role="content">
-				<ul data-role="listview" id="Ul4" data-inset="true" data-theme="d">
-					<li>under construction</li>
+				<ul data-role="listview" id="myTripsView" data-inset="true" data-theme="d">
+					<li>
+						<a href="#myRoute" data-transition="slide">passwoord wijzigen</a>
+					</li>
 				</ul>
 			</div>
 		</div>

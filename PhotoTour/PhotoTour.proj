@@ -12,10 +12,10 @@
     <iOSStatusBarStyle>Default</iOSStatusBarStyle>
     <BundleVersion>1.0</BundleVersion>
     <AndroidVersionCode>1</AndroidVersionCode>
-    <AndroidHardwareAcceleration>True</AndroidHardwareAcceleration>
+    <AndroidHardwareAcceleration>true</AndroidHardwareAcceleration>
     <iOSDisplayName />
     <iOSDeviceFamily>1;2</iOSDeviceFamily>
-    <iOSBackgroundMode />
+    <iOSBackgroundMode>location</iOSBackgroundMode>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="App_Resources" />

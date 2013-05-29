@@ -28,7 +28,6 @@ function onSuccess(position) {
     lng = position.coords.longitude;
     $("#icon").removeClass();
     $("#text").empty();
-    console.log(boolRoute);
     if(boolRoute == true){
         location();
     }
@@ -77,6 +76,44 @@ photoTourApp.prototype = function() {
         var that = this;
         $('#tripDetail').live('pagebeforeshow',$.proxy(_initTripDetail,that));
         $('#home').live('pagebeforecreate',$.proxy(_initHome,that));
+        $('#myRoute').live('pagebeforeshow',$.proxy(_handleDataForFF,that));
+        $('#RouteProv').live('click', function () {
+            $ProvList = $('#ProvListView');
+            var test = $('#prov').val();
+            $.ajax({
+                    url: 'http://wouterlambrechts.ikdoeict.be/project2/api/provincie/'+ test ,
+                    type: 'get',
+                    dataType: 'json',
+    	        success: function(data, textStatus, jqXHR) {
+                    if(data.content.length > 0){
+                        for (var i in data.content) {
+                            var flight = data.content[i];
+                            $ProvList.append('<a href="#tripDetail" data-transition="slide" id="route"><li class="clearfix list" id="' + data.content[i].gsmCode + '"><img style="width:100px; height:auto" src="./images/photosearch.jpg"/><H4 style="margin-bottom: -8px;">'  + data.content[i].Name +  '</h4><p>Een echt stadzoektocht door de historische stad Gent<br>' + data.content[i].Duration + ' minuten</p></li></a>');
+        			        var item = $('#' +  data.content[i].gsmCode, $ProvList);
+                            item.data('flight', flight);
+                            item.addClass('tripDetail');
+                        }
+                    }else{
+                         $('p#Route').html('Nog geen Routes gevonden.</br><a data-role="button" href="#myTrips" id="btnHome"class="ui-btn-right">Ga naar alle Routes</a>');
+                    }
+    	        }     
+            });
+            $.mobile.changePage("#provincie", { transition: "flip" });
+        });
+        $('#gsm').live('click', function () {
+            var test = $('#gsmcode').val();
+                $.ajax({
+                        url: 'http://wouterlambrechts.ikdoeict.be/project2/api/gsm/'+ test ,
+                        type: 'get',
+                        dataType: 'json',
+        	        success: function(data, textStatus, jqXHR) {
+                       if(data.content.length > 0){
+                          _flightForDetails = data.content[0];
+                           $.mobile.changePage("#tripDetail", { transition: "flip" });
+                       }
+        	        }     
+                });  
+        });
         $('#btnHome').live('click', function () {
             boolRoute = false;
         });
@@ -115,7 +152,6 @@ photoTourApp.prototype = function() {
                     $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[0].lat + ',' + data.content[0].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
                     var item = $('#button');
                     var total = point + 1;
-                    console.log(total);
                     item.data('point', total);
                     item.addClass('next');
                }else{
@@ -130,22 +166,29 @@ photoTourApp.prototype = function() {
     _initTripDetail = function(){
 	    route = _flightForDetails.idRoutes;
         $.ajax({
-        url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route ,
+        url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route + '/1' ,
         type: 'get',
         dataType: 'json',
 	        success: function(data, textStatus, jqXHR) {
-                lat1 = data.content[0].lat;
-                lng1 = data.content[0].lng;
-                boolRoute = true;
-                $('#total').empty();
-                $('p#adres').html(data.content[0].address);
-                $('span#photo').html(1);
-                $('#total').append(data.content.length);
-                $('#streetview').empty();
-                $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[0].lat + ',' + data.content[0].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
-                var item = $('#button');
-                item.data('point', 2);
-                item.addClass('next');
+               if(data.content.length > 0){
+                   $.post('http://wouterlambrechts.ikdoeict.be/project2/api/MyRoute', { user: IDuser, Routes: route },function(result){
+                          console.log(result);
+                    });
+                    lat1 = data.content[0].lat;
+                    lng1 = data.content[0].lng;
+                    boolRoute = true;
+                    $('#total').empty();
+                    $('p#adres').html(data.content[0].address);
+                    $('span#photo').html(1);
+                    $('#total').append(data.content.length);
+                    $('#streetview').empty();
+                    $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[0].lat + ',' + data.content[0].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
+                    var item = $('#button');
+                    item.data('point', 2);
+                    item.addClass('next');
+               }else{
+                    _arrived();
+               }
 	        }     
         });  
     },
@@ -174,7 +217,7 @@ photoTourApp.prototype = function() {
                                     _login = true;
                                     $('span#ffname').html(username);
                         			_handleDataForFF();
-                                   
+                                   $.mobile.changePage('#home', { transition: 'flip' });
                         		}, 3000);     		
         	                }else{
                              $.mobile.loading('hide');
@@ -196,23 +239,25 @@ photoTourApp.prototype = function() {
     
     _handleDataForFF = function () {
         $myRoute = $('#myRouteListView');	
-        $flightList = $('#RouteListView');	
-         $.ajax({
+        $flightList = $('#RouteListView');
+        $('#myRouteListView').empty();
+        $('#RouteListView').empty();
+        $.ajax({
         url: 'http://wouterlambrechts.ikdoeict.be/project2/api/MyRoute/'+ IDuser,
         type: 'get',
         dataType: 'json',
 	        success: function(datas, textStatus, jqXHR) {
                 if(datas.content.length >0){
                     for (var i in datas.content) {
-                        console.log(datas.content[i]);
                          $.ajax({
                             url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Routes/' + datas.content[i].Routes,
                             type: 'get',
                             dataType: 'json',
                               success: function(data, textStatus, jqXHR) {
-                                var flight = data.content[i];
-                                $myRoute.append('<a href="#tripDetail" data-transition="slide" id="route"><li class="clearfix list" id="' + data.content[i].Name + '"><img style="width:100px; height:auto" src="./images/photosearch.jpg"/><H4 style="margin-bottom: -8px;">'  + data.content[i].Name +  '</H4><p>Een echt stadzoektocht door de historische stad Gent.<br>' + data.content[i].Duration + ' minuten</p></li></a>');
-            			        var item = $('#' +  data.content[i].Name, $myRoute);
+                                var flight = data.content[0];
+                                
+                                $myRoute.append('<a href="#tripDetail" data-transition="slide" id="route"><li class="clearfix list" id="' + data.content[0].gsmCode + '"><img style="width:100px; height:auto" src="./images/photosearch.jpg"/><H4 style="margin-bottom: -8px;">'  + data.content[0].Name +  '</H4><p>Een echt stadzoektocht door de historische stad Gent.<br>' + data.content[0].Duration + ' minuten</p></li></a>');
+            			        var item = $('#' +  data.content[0].gsmCode, $myRoute);
                                 item.data('flight', flight);
                                 item.addClass('tripDetail');
                               }
@@ -229,18 +274,19 @@ photoTourApp.prototype = function() {
         type: 'get',
         dataType: 'json',
 	        success: function(data, textStatus, jqXHR) {
-                
+               
 	     		_customerData = data;
                 for (var i in data.content) {
                     var flight = data.content[i];
-                    $flightList.append('<a href="#tripDetail" data-transition="slide" id="route"><li class="clearfix list" id="' + data.content[i].Name + '"><img style="width:100px; height:auto" src="./images/photosearch.jpg"/><H4 style="margin-bottom: -8px;">'  + data.content[i].Name +  '</h4><p>Een echt stadzoektocht door de historische stad Gent<br>' + data.content[i].Duration + ' minuten</p></li></a>');
-			        var item = $('#' +  data.content[i].Name, $flightList);
+                   
+                    $flightList.append('<a href="#tripDetail" data-transition="slide" id="route"><li class="clearfix list" id="' + data.content[i].gsmCode + '"><img style="width:100px; height:auto" src="./images/photosearch.jpg"/><H4 style="margin-bottom: -8px;">'  + data.content[i].Name +  '</h4><p>Een echt stadzoektocht door de historische stad Gent<br>' + data.content[i].Duration + ' minuten</p></li></a>');
+			        var item = $('#' +  data.content[i].gsmCode, $flightList);
                     item.data('flight', flight);
                     item.addClass('tripDetail');
                 }
 	        }     
         });      
-		$.mobile.changePage('#home', { transition: 'flip' });
+		//
 	};
     
     return {
