@@ -91,5 +91,14 @@
     <Content Include="styles\phone-800.css" />
     <Content Include="styles\tablet-1024-ldpi.css" />
   </ItemGroup>
+  <ItemGroup>
+    <CordovaPlugin Include="com.phonegap.plugins.barcodescanner">
+      <Version>0.3.0</Version>
+      <Name>Barcode Scanner</Name>
+    </CordovaPlugin>
+  </ItemGroup>
+  <ItemGroup>
+    <CordovaPluginContent Include="com.phonegap.plugins.barcodescanner\barcodescanner.js" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Telerik\ICE\Tools\Mobile\MobileTools.targets" />
 </Project>

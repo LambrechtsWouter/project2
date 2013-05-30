@@ -77,6 +77,7 @@ photoTourApp.prototype = function() {
         $('#tripDetail').live('pagebeforeshow',$.proxy(_initTripDetail,that));
         $('#home').live('pagebeforecreate',$.proxy(_initHome,that));
         $('#myRoute').live('pagebeforeshow',$.proxy(_handleDataForFF,that));
+        $('#scanButton').live('click',$.proxy(_scan,that)); 
         $('#RouteProv').live('click', function () {
             $ProvList = $('#ProvListView');
             var test = $('#prov').val();
@@ -100,6 +101,7 @@ photoTourApp.prototype = function() {
             });
             $.mobile.changePage("#provincie", { transition: "flip" });
         });
+        
         $('#gsm').live('click', function () {
             var test = $('#gsmcode').val();
                 $.ajax({
@@ -148,6 +150,7 @@ photoTourApp.prototype = function() {
                     boolRoute = true;
                     $('#streetview').empty();
                     $('p#adres').html(data.content[0].address);
+                    $('p#locatie').html(data.content[0].arrived_text);
                     $('span#photo').html(point);
                     $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[0].lat + ',' + data.content[0].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
                     var item = $('#button');
@@ -161,7 +164,15 @@ photoTourApp.prototype = function() {
         });
     },
     _arrived = function(){
-        $.mobile.changePage("#Arrived", { transition: "flip" });
+         $.ajax({
+        url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Routes/'+ route ,
+        type: 'get',
+        dataType: 'json',
+	        success: function(data, textStatus, jqXHR) {
+                $('p#uitleg').html(data.content[0].arrived_text);
+                $.mobile.changePage("#Arrived", { transition: "flip" });  
+             }
+         });
     }       
     _initTripDetail = function(){
 	    route = _flightForDetails.idRoutes;
@@ -179,6 +190,7 @@ photoTourApp.prototype = function() {
                     boolRoute = true;
                     $('#total').empty();
                     $('p#adres').html(data.content[0].address);
+                    $('p#locatie').html(data.content[0].arrived_text);
                     $('span#photo').html(1);
                     $('#total').append(data.content.length);
                     $('#streetview').empty();
@@ -288,7 +300,23 @@ photoTourApp.prototype = function() {
         });      
 		//
 	};
-    
+    _scan = function() {
+		var that = this;
+		window.plugins.barcodeScanner.scan(
+			function(result) {
+				if (!result.cancelled) {
+					that._addMessageToLog(result.format + " | " + result.text);    
+				}
+			}, 
+			function(error) {
+				console.log("Scanning failed: " + error);
+			});
+	},
+
+	_addMessageToLog = function(message) {
+        $resultsField = $('#result');
+		$resultsField.innerHTML =  message + '<br />'; 
+	}
     return {
         run:run,
     };
