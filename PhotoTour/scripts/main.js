@@ -1,13 +1,13 @@
 
 // Wait for Apache Cordova to load
 document.addEventListener("deviceready", onDeviceReady, false);
- var watchID = null;
+ var watchID  = null;
  var options = { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
     
 // PhoneGap is ready
 function onDeviceReady() {
    checkConnection();  
-   watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
+  watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
 }
 function checkConnection() {
     var networkState = navigator.network.connection.type;
@@ -20,8 +20,10 @@ function checkConnection() {
     states[Connection.CELL_3G]  = 'Cell 3G connection';
     states[Connection.CELL_4G]  = 'Cell 4G connection';
     states[Connection.NONE]     = 'No network connection';
-
-    //alert('Connection type: ' + states[networkState]);
+    if( states[networkState] == states[Connection.NONE]){
+       alert('Er is geen internet connectie. De app zal niet werken'); 
+    }
+    
 }
 function onSuccess(position) {
     lat = position.coords.latitude;
@@ -56,7 +58,10 @@ function location(){
 }
 
 function sucessLocation(){
+    boolRoute = false;
     $('#streetview').empty();
+    lat = null;
+    lng = null;
     $.mobile.changePage("#Location", { transition: "flip" });
     
 }
@@ -69,7 +74,7 @@ var boolRoute = false;
 var photoTourApp = function(){}
 
 photoTourApp.prototype = function() {
-    var _flightForDetails=null,
+    var _RouteDetails=null,
     _login = false,
     route = null,
     run = function(){
@@ -80,6 +85,7 @@ photoTourApp.prototype = function() {
         $('#scanButton').live('click',$.proxy(_scan,that)); 
         $('#RouteProv').live('click', function () {
             $ProvList = $('#ProvListView');
+            $('#ProvListView').empty();
             var test = $('#prov').val();
             $.ajax({
                     url: 'http://wouterlambrechts.ikdoeict.be/project2/api/provincie/'+ test ,
@@ -110,7 +116,7 @@ photoTourApp.prototype = function() {
                         dataType: 'json',
         	        success: function(data, textStatus, jqXHR) {
                        if(data.content.length > 0){
-                          _flightForDetails = data.content[0];
+                           _RouteDetails = data.content[0];
                            $.mobile.changePage("#tripDetail", { transition: "flip" });
                        }
         	        }     
@@ -134,25 +140,28 @@ photoTourApp.prototype = function() {
            
             $('#streetview').empty();
         	var item = $(this);
-        	_flightForDetails = item.data('flight');
+        	_RouteDetails = item.data('flight');
         });
         
         $('.next').live('click', function () {
             $('#streetview').empty();
-            $.mobile.changePage("#tripDetail", { transition: "flip" });
             boolRoute = false;
+            $.mobile.changePage("#tripDetail", { transition: "flip" });
+            
             var item = $(this);
             point = item.data('point');
+            console.log(point);
             $.get('http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route + '/' + point,function(data) {
                if(data.content.length > 0){
+                   
                     lat1 = data.content[0].lat;
                     lng1 = data.content[0].lng;
                     boolRoute = true;
-                    $('#streetview').empty();
+                   //$('#streetview').empty();
                     $('p#adres').html(data.content[0].address);
                     $('p#locatie').html(data.content[0].arrived_text);
                     $('span#photo').html(point);
-                    $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[0].lat + ',' + data.content[0].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
+                    $('#streetview').html('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[0].lat + ',' + data.content[0].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
                     var item = $('#button');
                     var total = point + 1;
                     item.data('point', total);
@@ -164,18 +173,18 @@ photoTourApp.prototype = function() {
         });
     },
     _arrived = function(){
+        $.mobile.changePage("#Arrived", { transition: "flip" });  
          $.ajax({
         url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Routes/'+ route ,
         type: 'get',
         dataType: 'json',
 	        success: function(data, textStatus, jqXHR) {
-                $('p#uitleg').html(data.content[0].arrived_text);
-                $.mobile.changePage("#Arrived", { transition: "flip" });  
+                $('p#uitleg').html(data.content[0].arrived_text);   
              }
          });
     }       
     _initTripDetail = function(){
-	    route = _flightForDetails.idRoutes;
+	    route = _RouteDetails.idRoutes;
         $.ajax({
         url: 'http://wouterlambrechts.ikdoeict.be/project2/api/Location/'+ route + '/1' ,
         type: 'get',
@@ -188,13 +197,11 @@ photoTourApp.prototype = function() {
                     lat1 = data.content[0].lat;
                     lng1 = data.content[0].lng;
                     boolRoute = true;
-                    $('#total').empty();
                     $('p#adres').html(data.content[0].address);
                     $('p#locatie').html(data.content[0].arrived_text);
                     $('span#photo').html(1);
-                    $('#total').append(data.content.length);
-                    $('#streetview').empty();
-                    $('#streetview').append('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[0].lat + ',' + data.content[0].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
+                    //$('#streetview').empty();
+                    $('#streetview').html('<img src="http://maps.googleapis.com/maps/api/streetview?size=300x300&location=' + data.content[0].lat + ',' + data.content[0].lng + '&heading=151.78&pitch=-0.76&sensor=false">');
                     var item = $('#button');
                     item.data('point', 2);
                     item.addClass('next');
@@ -242,6 +249,11 @@ photoTourApp.prototype = function() {
                              $.mobile.changePage("#logon", { transition: "flip" });
                         }
                      },
+                     error: function () {
+                          $.mobile.loading('hide');
+                             $('#error').append('<li>inloggen mislukt</li>');
+                             $.mobile.changePage("#logon", { transition: "flip" });
+                     }   
                 });
                 return false;
                
@@ -299,13 +311,12 @@ photoTourApp.prototype = function() {
 	        }     
         });      
 		//
-	};
+	},
     _scan = function() {
-		var that = this;
 		window.plugins.barcodeScanner.scan(
 			function(result) {
 				if (!result.cancelled) {
-					that._addMessageToLog(result.format + " | " + result.text);    
+					_addMessageToLog(result.text);    
 				}
 			}, 
 			function(error) {
@@ -313,10 +324,25 @@ photoTourApp.prototype = function() {
 			});
 	},
 
-	_addMessageToLog = function(message) {
-        $resultsField = $('#result');
-		$resultsField.innerHTML =  message + '<br />'; 
-	}
+	_addMessageToLog = function(message) {  
+       $('p#result').html(message);   
+		$.ajax({
+                url: 'http://wouterlambrechts.ikdoeict.be/project2/api/gsm/'+ message ,
+                type: 'get',
+                dataType: 'json',
+	        success: function(data, textStatus, jqXHR) {
+               if(data.content.length > 0){
+                  _RouteDetails = data.content[0];
+                   $.mobile.changePage("#tripDetail", { transition: "flip" });
+              }else{
+                 $('p#result').html('Geen Routes gevonden');   
+              }
+	        },
+            error: function () {
+                $('p#result').html('Geen Routes gevonden');   
+            }   
+        }); 
+	};
     return {
         run:run,
     };
